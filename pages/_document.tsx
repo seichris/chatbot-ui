@@ -19,7 +19,7 @@ class MyDocument extends Document<Props> {
             async
             src="https://staticshield.vercel.app/script.js"
             data-cap=""
-            data-site-id="567851bb-9cf3-419a-bfcc-bea09dd4e302"
+            data-site-id="a579b33c-7a9b-4f2d-ac79-94fb6e51e131"
             data-strategy="beforeInteractive"
           ></script>
           <script data-strategy="beforeInteractive">
