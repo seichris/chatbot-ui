@@ -5,6 +5,7 @@ on:
       - completed
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
+
 jobs:
   update-fork:
     runs-on: ubuntu-latest
@@ -20,24 +21,26 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-      - name: Fetch upstream changes
+
+      - name: Fetch changes from branch 2
         run: |
-          git remote add upstream https://github.com/mckaywrigley/chatbot-ui.git
-          git fetch upstream
-      - name: Merge upstream changes into fork
+          git fetch origin 2
+
+      - name: Merge changes from branch 2 into 2protec
         run: |
           git checkout 2protec
-          git merge upstream/main --no-edit
-      - name: Push changes to fork
-        run: git push https://x-access-token:${{ secrets.PUSH }}@github.com/seichris/chatbot-ui.git 2
+          git merge origin/2 --no-edit
+
+      - name: Push changes to 2protec
+        run: git push https://x-access-token:${{ secrets.PUSH }}@github.com/seichris/chatbot-ui.git 2protec
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PUSH }}
-          commit-message: Update fork with upstream changes
-          title: Update fork with upstream changes
+          commit-message: Update 2protec with changes from branch 2
+          title: Update 2protec with changes from branch 2
           body: |
-            This pull request was automatically created to update the fork with the latest changes from the upstream repository.
+            This pull request was automatically created to update the 2protec branch with the latest changes from the branch 2.
           branch: update-fork
           base: 2protec
