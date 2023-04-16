@@ -5,15 +5,14 @@ on:
       - completed
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
-
 jobs:
   update-fork:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          ref: main
+          ref: 2protec
           fetch-depth: 0
           token: ${{ secrets.PUSH }}
 
@@ -21,20 +20,17 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-
       - name: Fetch upstream changes
         run: |
           git remote add upstream https://github.com/mckaywrigley/chatbot-ui.git
           git fetch upstream
-
       - name: Merge upstream changes into fork
         run: |
-          git checkout main
+          git checkout 2protec
           git merge upstream/main --no-edit
-
       - name: Push changes to fork
-        run: git push
-  
+        run: git push https://x-access-token:${{ secrets.PUSH }}@github.com/seichris/chatbot-ui.git 2
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -44,4 +40,4 @@ jobs:
           body: |
             This pull request was automatically created to update the fork with the latest changes from the upstream repository.
           branch: update-fork
-          base: main
+          base: 2protec
