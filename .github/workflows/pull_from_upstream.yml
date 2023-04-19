@@ -5,6 +5,7 @@ on:
       - completed
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
+
 jobs:
   update-fork:
     runs-on: ubuntu-latest
@@ -20,18 +21,32 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
+
       - name: Fetch upstream changes
         run: |
           git remote add upstream https://github.com/mckaywrigley/chatbot-ui.git
           git fetch upstream
+
       - name: Merge upstream changes into fork
         run: |
           git checkout 2
           git merge upstream/main --no-edit
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet origin/2 HEAD; then
+            echo "::set-output name=has_changes::false"
+          else
+            echo "::set-output name=has_changes::true"
+          fi
+
       - name: Push changes to fork
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: git push https://x-access-token:${{ secrets.PUSH }}@github.com/seichris/chatbot-ui.git 2
 
       - name: Create pull request
+        if: steps.check_changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PUSH }}
