@@ -35,7 +35,9 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet origin/2 HEAD; then
+          CURRENT_COMMIT=$(git rev-parse HEAD)
+          UPSTREAM_COMMIT=$(git rev-parse upstream/main)
+          if [ "$CURRENT_COMMIT" == "$UPSTREAM_COMMIT" ]; then
             echo "::set-output name=has_changes::false"
           else
             echo "::set-output name=has_changes::true"
