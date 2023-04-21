@@ -30,11 +30,24 @@ jobs:
         run: |
           git checkout 2protec
           git merge origin/2 --no-edit
+          
+      - name: Check for changes
+        id: check_changes
+        run: |
+          CURRENT_COMMIT=$(git rev-parse HEAD)
+          UPSTREAM_COMMIT=$(git rev-parse upstream/main)
+          if [ "$CURRENT_COMMIT" == "$UPSTREAM_COMMIT" ]; then
+            echo "::set-output name=has_changes::false"
+          else
+            echo "::set-output name=has_changes::true"
+          fi
 
       - name: Push changes to 2protec
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: git push https://x-access-token:${{ secrets.PUSH }}@github.com/seichris/chatbot-ui.git 2protec
 
       - name: Create pull request
+        if: steps.check_changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.PUSH }}
