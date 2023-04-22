@@ -35,8 +35,8 @@ jobs:
         id: check_changes
         run: |
           CURRENT_COMMIT=$(git rev-parse HEAD)
-          UPSTREAM_COMMIT=$(git rev-parse upstream/main)
-          if [ "$CURRENT_COMMIT" == "$UPSTREAM_COMMIT" ]; then
+          BRANCH_2_COMMIT=$(git rev-parse origin/2)
+          if [ "$CURRENT_COMMIT" == "$BRANCH_2_COMMIT" ]; then
             echo "::set-output name=has_changes::false"
           else
             echo "::set-output name=has_changes::true"
